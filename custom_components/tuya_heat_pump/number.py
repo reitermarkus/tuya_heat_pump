@@ -34,13 +34,11 @@ async def async_setup_entry(
     number_configs = coordinator.model_mapping.get("numbers", {})
 
     # 🔴 DEĞİŞİKLİK: coordinator.data kontrolü kaldırıldı
-    for number_code, number_config in number_configs.items():
-        numbers.append(TuyaHeatpumpNumber(coordinator, number_code, number_config))
-        _LOGGER.info(
-            "Adding number: %s (%s)",
-            number_config.get("name", number_code),
-            number_code,
-        )
+    for number_id, number_config in number_configs.items():
+        number_code = number_config["code"]
+
+        numbers.append(TuyaHeatpumpNumber(coordinator, number_id, number_config))
+        _LOGGER.info(f"Adding number: {number_id} ({number_code})")
 
     async_add_entities(numbers)
 
@@ -51,21 +49,23 @@ class TuyaHeatpumpNumber(NumberEntity):
     def __init__(
         self,
         coordinator: TuyaScaleDataUpdateCoordinator,
-        number_code: str,
+        number_id: str,
         config: dict,
     ) -> None:
         """Initialize the number."""
         self.coordinator = coordinator
-        self._number_code = number_code
+        self._number_id = number_id
+        self._number_code = config["code"]
         self._config = config
 
         # Device name ile unique_id oluştur
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
-        self._attr_unique_id = f"{device_name_slug}_{number_code}"
+        self._attr_unique_id = f"{device_name_slug}_{number_id}"
 
-        self._attr_name = config.get("name", number_code)
+        self._attr_name = config.get("name", number_id)
+        self._attr_device_class = config.get("device_class")
         self._attr_icon = config.get("icon")
         self._attr_native_unit_of_measurement = config.get("unit")
         self._attr_native_min_value = config.get("min_value", 0.0)
@@ -95,14 +95,14 @@ class TuyaHeatpumpNumber(NumberEntity):
             result = conversion.convert(raw_value)
             return float(result) if isinstance(result, (int, float)) else result
         except Exception as err:
-            _LOGGER.warning("Conversion failed for %s: %s", self._number_code, err)
+            _LOGGER.warning("Conversion failed for %s: %s", self._number_id, err)
             return raw_value
 
     async def async_set_native_value(self, value: float) -> None:
         """Set new value."""
         _LOGGER.info(
             "Attempting to set %s to %s %s",
-            self._number_code,
+            self._number_id,
             value,
             self._attr_native_unit_of_measurement,
         )
@@ -118,13 +118,13 @@ class TuyaHeatpumpNumber(NumberEntity):
         success = await self.coordinator.send_command(self._number_code, api_value)
 
         if success:
-            _LOGGER.info("✅ Successfully set %s to %s", self._number_code, value)
+            _LOGGER.info("✅ Successfully set %s to %s", self._number_id, value)
             await self.coordinator.async_request_refresh()
         else:
-            _LOGGER.warning("❌ Failed to set %s to %s", self._number_code, value)
+            _LOGGER.warning("❌ Failed to set %s to %s", self._number_id, value)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._number_code)} değeri değiştirilemiyor. "
+                f"{self._config.get('name', self._number_id)} değeri değiştirilemiyor. "
                 f"Cihazınız bu ayarı değiştirmeye izin vermiyor. "
                 f"Lütfen ayarı cihaz üzerinden yapın."
             )

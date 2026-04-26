@@ -36,19 +36,17 @@ async def async_setup_entry(
     # Model mapping'den binary sensörleri al
     binary_sensor_configs = coordinator.model_mapping.get("binary_sensors", {})
 
-    for sensor_code, sensor_config in binary_sensor_configs.items():
+    for sensor_id, sensor_config in binary_sensor_configs.items():
+        sensor_code = sensor_config["code"]
+
         if coordinator.data and sensor_code in coordinator.data:
             binary_sensors.append(
-                TuyaHeatpumpBinarySensor(coordinator, sensor_code, sensor_config)
+                TuyaHeatpumpBinarySensor(coordinator, sensor_id, sensor_config)
             )
-            _LOGGER.info(
-                "Adding binary sensor: %s (%s)",
-                sensor_config.get("name", sensor_code),
-                sensor_code,
-            )
+            _LOGGER.info(f"Adding binary sensor: {sensor_id} ({sensor_code})")
         else:
             _LOGGER.warning(
-                "Binary sensor %s not found in device data, skipping", sensor_code
+                f"Binary sensor {sensor_id} ({sensor_code}) not found in device data, skipping."
             )
 
     async_add_entities(binary_sensors)
@@ -112,21 +110,22 @@ class TuyaHeatpumpBinarySensor(BinarySensorEntity):
     def __init__(
         self,
         coordinator: TuyaScaleDataUpdateCoordinator,
-        sensor_code: str,
+        sensor_id: str,
         config: dict,
     ) -> None:
         """Initialize the binary sensor."""
         self.coordinator = coordinator
-        self._sensor_code = sensor_code
+        self._sensor_id = sensor_id
+        self._sensor_code = config["code"]
         self._config = config
 
         # Device name ile unique_id oluştur
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
-        self._attr_unique_id = f"{device_name_slug}_{sensor_code}"
+        self._attr_unique_id = f"{device_name_slug}_{sensor_id}"
 
-        self._attr_name = config.get("name", sensor_code)
+        self._attr_name = config.get("name", sensor_id)
         self._attr_device_class = config.get("device_class")
         self._attr_has_entity_name = True
 
@@ -151,7 +150,7 @@ class TuyaHeatpumpBinarySensor(BinarySensorEntity):
             result = conversion.convert(raw_value)
             return bool(result)
         except Exception as err:
-            _LOGGER.warning("Conversion failed for %s: %s", self._sensor_code, err)
+            _LOGGER.warning("Conversion failed for %s: %s", self._sensor_id, err)
 
             # Fallback conversion
             if isinstance(raw_value, bool):

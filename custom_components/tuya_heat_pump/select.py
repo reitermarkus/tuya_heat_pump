@@ -34,12 +34,12 @@ async def async_setup_entry(
     select_configs = coordinator.model_mapping.get("selects", {})
 
     # 🔴 DEĞİŞİKLİK: coordinator.data kontrolü kaldırıldı
-    for select_code, select_config in select_configs.items():
-        selects.append(TuyaHeatpumpSelect(coordinator, select_code, select_config))
+    for select_id, select_config in select_configs.items():
+        select_code = select_config["code"]
+
+        selects.append(TuyaHeatpumpSelect(coordinator, select_id, select_config))
         _LOGGER.info(
-            "Adding select: %s (%s)",
-            select_config.get("name", select_code),
-            select_code,
+            f"Adding select: {select_id} ({select_code})",
         )
 
     async_add_entities(selects)
@@ -53,25 +53,26 @@ class TuyaHeatpumpSelect(SelectEntity):
     def __init__(
         self,
         coordinator: TuyaScaleDataUpdateCoordinator,
-        select_code: str,
+        select_id: str,
         config: dict,
     ) -> None:
         """Initialize the select."""
         self.coordinator = coordinator
-        self._select_code = select_code
+        self._select_id = select_id
+        self._select_code = config["code"]
         self._config = config
 
         # Device name ile unique_id oluştur
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
-        self._attr_unique_id = f"{device_name_slug}_{select_code}"
+        self._attr_unique_id = f"{device_name_slug}_{select_id}"
 
         # Translation key varsa kullan
         if "translation_key" in config:
             self._attr_translation_key = config["translation_key"]
         else:
-            self._attr_name = config.get("name", select_code)
+            self._attr_name = config.get("name", select_id)
 
         self._attr_icon = config.get("icon")
 
@@ -79,11 +80,11 @@ class TuyaHeatpumpSelect(SelectEntity):
         options_dict = config.get("options", {})
         # options dict ise value:label şeklinde, liste ise direkt
         if isinstance(options_dict, dict):
-            self._attr_options = list(options_dict.keys())
-            self._option_labels = options_dict  # value → label mapping
+            self._options = options_dict  # value → label mapping
         else:
-            self._attr_options = options_dict
-            self._option_labels = {opt: opt for opt in options_dict}
+            self._options = {opt: opt for opt in options_dict}
+
+        self._reverse_options = {value: key for key, value in self._options.items()}
 
         # Device info
         self._attr_device_info = coordinator.device_info
@@ -107,24 +108,26 @@ class TuyaHeatpumpSelect(SelectEntity):
             value = conversion.convert(raw_value)
         except Exception as err:
             value = raw_value
-            _LOGGER.warning("Conversion failed for %s: %s", self._select_code, err)
+            _LOGGER.warning("Conversion failed for %s: %s", self._select_id, err)
+
+        value = self._options[value]
 
         if isinstance(value, str):
             return value
 
         _LOGGER.warning(
-            "Unexpected value type for %s: %s", self._select_code, type(value)
+            "Unexpected value type for %s: %s", self._select_id, type(value)
         )
         return None
 
     @property
     def options(self) -> list[str]:
         """Return a list of available options."""
-        return self._attr_options
+        return list(self._options.values())
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        _LOGGER.info("Changing %s to %s", self._select_code, option)
+        _LOGGER.info("Changing %s to %s", self._select_id, option)
 
         conversion = Conversion(self._config.get("api_conversion", "value"))
         try:
@@ -137,13 +140,13 @@ class TuyaHeatpumpSelect(SelectEntity):
         success = await self.coordinator.send_command(self._select_code, api_value)
 
         if success:
-            _LOGGER.info("✅ Successfully changed %s to %s", self._select_code, option)
+            _LOGGER.info("✅ Successfully changed %s to %s", self._select_id, option)
             await self.coordinator.async_request_refresh()
         else:
-            _LOGGER.warning("❌ Failed to change %s to %s", self._select_code, option)
+            _LOGGER.warning("❌ Failed to change %s to %s", self._select_id, option)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._select_code)} değiştirilemiyor. "
+                f"{self._config.get('name', self._select_id)} değiştirilemiyor. "
                 f"Cihazınız bu modu değiştirmeye izin vermiyor. "
                 f"Lütfen modu cihaz üzerinden yapın."
             )

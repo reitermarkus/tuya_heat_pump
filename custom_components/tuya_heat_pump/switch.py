@@ -34,13 +34,11 @@ async def async_setup_entry(
     switch_configs = coordinator.model_mapping.get("switches", {})
 
     # 🔴 DEĞİŞİKLİK: coordinator.data kontrolü kaldırıldı
-    for switch_code, switch_config in switch_configs.items():
-        switches.append(TuyaHeatpumpSwitch(coordinator, switch_code, switch_config))
-        _LOGGER.info(
-            "Adding switch: %s (%s)",
-            switch_config.get("name", switch_code),
-            switch_code,
-        )
+    for switch_id, switch_config in switch_configs.items():
+        switch_code = switch_config["code"]
+
+        switches.append(TuyaHeatpumpSwitch(coordinator, switch_id, switch_config))
+        _LOGGER.info(f"Adding switch: {switch_id} ({switch_code})")
 
     async_add_entities(switches)
 
@@ -51,21 +49,23 @@ class TuyaHeatpumpSwitch(SwitchEntity):
     def __init__(
         self,
         coordinator: TuyaScaleDataUpdateCoordinator,
-        switch_code: str,
+        switch_id: str,
         config: dict,
     ) -> None:
         """Initialize the switch."""
         self.coordinator = coordinator
-        self._switch_code = switch_code
+        self._switch_id = switch_id
+        self._switch_code = config["code"]
         self._config = config
 
         # Device name ile unique_id oluştur
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
-        self._attr_unique_id = f"{device_name_slug}_{switch_code}"
+        self._attr_unique_id = f"{device_name_slug}_{switch_id}"
 
-        self._attr_name = config.get("name", switch_code)
+        self._attr_name = config.get("name", switch_id)
+        self._attr_device_class = config.get("device_class")
         self._attr_icon = config.get("icon")
         self._attr_has_entity_name = True
 
@@ -90,7 +90,7 @@ class TuyaHeatpumpSwitch(SwitchEntity):
             result = conversion.convert(raw_value)
             return bool(result)
         except Exception as err:
-            _LOGGER.warning("Conversion failed for %s: %s", self._switch_code, err)
+            _LOGGER.warning("Conversion failed for %s: %s", self._switch_id, err)
 
             # Fallback conversion
             if isinstance(raw_value, bool):
@@ -104,7 +104,7 @@ class TuyaHeatpumpSwitch(SwitchEntity):
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
-        _LOGGER.info("Turning ON %s", self._switch_code)
+        _LOGGER.info("Turning ON %s", self._switch_id)
 
         conversion = Conversion(self._config.get("api_conversion", "value"))
         try:
@@ -117,20 +117,20 @@ class TuyaHeatpumpSwitch(SwitchEntity):
         success = await self.coordinator.send_command(self._switch_code, api_value)
 
         if success:
-            _LOGGER.info("✅ Successfully turned ON %s", self._switch_code)
+            _LOGGER.info("✅ Successfully turned ON %s", self._switch_id)
             await self.coordinator.async_request_refresh()
         else:
-            _LOGGER.warning("❌ Failed to turn ON %s", self._switch_code)
+            _LOGGER.warning("❌ Failed to turn ON %s", self._switch_id)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._switch_code)} açılamıyor. "
+                f"{self._config.get('name', self._switch_id)} açılamıyor. "
                 f"Cihazınız bu özelliği değiştirmeye izin vermiyor. "
                 f"Lütfen ayarı cihaz üzerinden yapın."
             )
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
-        _LOGGER.info("Turning OFF %s", self._switch_code)
+        _LOGGER.info("Turning OFF %s", self._switch_id)
 
         conversion = Conversion(self._config.get("api_conversion", "value"))
         try:
@@ -143,13 +143,13 @@ class TuyaHeatpumpSwitch(SwitchEntity):
         success = await self.coordinator.send_command(self._switch_code, api_value)
 
         if success:
-            _LOGGER.info("✅ Successfully turned OFF %s", self._switch_code)
+            _LOGGER.info("✅ Successfully turned OFF %s", self._switch_id)
             await self.coordinator.async_request_refresh()
         else:
-            _LOGGER.warning("❌ Failed to turn OFF %s", self._switch_code)
+            _LOGGER.warning("❌ Failed to turn OFF %s", self._switch_id)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._switch_code)} kapatılamıyor. "
+                f"{self._config.get('name', self._switch_id)} kapatılamıyor. "
                 f"Cihazınız bu özelliği değiştirmeye izin vermiyor. "
                 f"Lütfen ayarı cihaz üzerinden yapın."
             )

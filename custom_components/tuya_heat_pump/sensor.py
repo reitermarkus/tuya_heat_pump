@@ -33,29 +33,25 @@ async def async_setup_entry(
     # Model mapping'den sensörleri al
     sensor_configs = coordinator.model_mapping.get("sensors", {})
 
-    for sensor_code, sensor_config in sensor_configs.items():
-        # API'de bu code var mı kontrol et
+    for sensor_id, sensor_config in sensor_configs.items():
+        sensor_code = sensor_config["code"]
+
+        # Check if code exists in the API.
         if coordinator.data and sensor_code in coordinator.data:
-            sensors.append(TuyaHeatpumpSensor(coordinator, sensor_code, sensor_config))
-            _LOGGER.info(
-                "Adding sensor: %s (%s)",
-                sensor_config.get("name", sensor_code),
-                sensor_code,
-            )
+            sensors.append(TuyaHeatpumpSensor(coordinator, sensor_id, sensor_config))
+            _LOGGER.info(f"Adding sensor: {sensor_id} ({sensor_code})")
         elif sensor_code == "calculated_power":
             # calculated_power her zaman eklenir (API'de yok, hesaplanır)
-            sensors.append(TuyaHeatpumpSensor(coordinator, sensor_code, sensor_config))
-            _LOGGER.info(
-                "Adding calculated sensor: %s", sensor_config.get("name", sensor_code)
-            )
+            sensors.append(TuyaHeatpumpSensor(coordinator, sensor_id, sensor_config))
+            _LOGGER.info(f"Adding calculated sensor: {sensor_id} ({sensor_code})")
         elif sensor_code == "total_energy":
             # total_energy her zaman eklenir
             sensors.append(TuyaEnergySensor(coordinator, sensor_config))
-            _LOGGER.info(
-                "Adding energy sensor: %s", sensor_config.get("name", sensor_code)
-            )
+            _LOGGER.info(f"Adding energy sensor: {sensor_id} ({sensor_code})")
         else:
-            _LOGGER.debug("Sensor %s not found in device data, skipping", sensor_code)
+            _LOGGER.debug(
+                f"Sensor {sensor_id} ({sensor_code}) not found in device data, skipping."
+            )
 
     async_add_entities(sensors)
 
@@ -66,20 +62,21 @@ class TuyaHeatpumpSensor(SensorEntity):
     def __init__(
         self,
         coordinator: TuyaScaleDataUpdateCoordinator,
-        sensor_code: str,
+        sensor_id: str,
         config: dict,
     ) -> None:
         """Initialize the sensor."""
         self.coordinator = coordinator
-        self._sensor_code = sensor_code
+        self._sensor_id = sensor_id
+        self._sensor_code = config["code"]
         self._config = config
 
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
-        self._attr_unique_id = f"{device_name_slug}_{sensor_code}"
+        self._attr_unique_id = f"{device_name_slug}_{sensor_id}"
 
-        self._attr_name = config.get("name", sensor_code)
+        self._attr_name = config.get("name", sensor_id)
         self._attr_native_unit_of_measurement = config.get("unit")
         self._attr_icon = config.get("icon")
         self._attr_device_class = config.get("device_class")
@@ -93,7 +90,7 @@ class TuyaHeatpumpSensor(SensorEntity):
         return self.coordinator.device_info
 
     @property
-    def native_value(self) -> str | None:
+    def native_value(self) -> str | float | None:
         """Return the state of the sensor."""
         if self._sensor_code == "calculated_power":
             return self._calculate_power()
@@ -108,7 +105,7 @@ class TuyaHeatpumpSensor(SensorEntity):
             result = conversion.convert(raw_value)
             return float(result) if isinstance(result, (int, float)) else result
         except Exception as err:
-            _LOGGER.warning("Conversion failed for %s: %s", self._sensor_code, err)
+            _LOGGER.warning("Conversion failed for %s: %s", self._sensor_id, err)
             return raw_value
 
     def _calculate_power(self) -> float | None:

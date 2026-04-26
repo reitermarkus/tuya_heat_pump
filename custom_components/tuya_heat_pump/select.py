@@ -78,11 +78,11 @@ class TuyaHeatpumpSelect(SelectEntity):
         options_dict = config.get("options", {})
         # options dict ise value:label şeklinde, liste ise direkt
         if isinstance(options_dict, dict):
-            self._attr_options = list(options_dict.keys())
-            self._option_labels = options_dict  # value → label mapping
+            self._options = options_dict  # value → label mapping
         else:
-            self._attr_options = options_dict
-            self._option_labels = {opt: opt for opt in options_dict}
+            self._options = {opt: opt for opt in options_dict}
+
+        self._reverse_options = {value: key for key, value in self._options.items()}
 
         # Device info
         self._attr_device_info = coordinator.device_info
@@ -121,14 +121,14 @@ class TuyaHeatpumpSelect(SelectEntity):
     @property
     def options(self) -> list[str]:
         """Return a list of available options."""
-        return self._attr_options
+        return list(self._options.values())
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         _LOGGER.info("Changing %s to %s", self._select_id, option)
 
         # API conversion varsa uygula
-        api_value = option
+        api_value = self._reverse_options[option]
         if "api_conversion" in self._config:
             try:
                 api_value = eval(

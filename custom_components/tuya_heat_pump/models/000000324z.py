@@ -98,8 +98,11 @@ SELECT_TYPES = {
         "code": "change_tem",
         "name": "Temperature Unit",
         "icon": "mdi:thermometer",
-        "conversion": "'°C' if value else '°F'",
-        "api_conversion": "value == '°C'",
+        "options": {
+            False: "°C",
+            True: "°F",
+        },
+        "conversion": "value",
     },
     "mode": {
         "dp_id": 105,
@@ -112,7 +115,6 @@ SELECT_TYPES = {
             "cool": "Cool",
         },
         "conversion": "value",
-        "api_conversion": "value",
     },
     "silent_mode": {
         "dp_id": 117,
@@ -120,10 +122,9 @@ SELECT_TYPES = {
         "name": "Silent Mode",
         "icon": "mdi:sine-wave",
         "options": {
-            "silent": "Silent",
-            "boost": "Boost",
+            False: "Silent",
+            True: "Boost",
         },
-        "conversion": "'boost' if value else 'silent'",
-        "api_conversion": "True if value == 'boost' else False",
+        "conversion": "value",
     },
 }

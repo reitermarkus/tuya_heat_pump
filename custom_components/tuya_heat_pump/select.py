@@ -102,7 +102,6 @@ class TuyaHeatpumpSelect(SelectEntity):
 
         raw_value = self.coordinator.data[self._select_code]["value"]
 
-        # Conversion varsa uygula
         conversion = Conversion(self._config.get("conversion", "value"))
         try:
             value = conversion.convert(raw_value)
@@ -110,7 +109,10 @@ class TuyaHeatpumpSelect(SelectEntity):
             value = raw_value
             _LOGGER.warning("Conversion failed for %s: %s", self._select_id, err)
 
-        value = self._options[value]
+        if value in self._options:
+            value = self._options[value]
+        else:
+            _LOGGER.warning(f"Unexpected value for {self._select_id}: {value}")
 
         if isinstance(value, str):
             return value

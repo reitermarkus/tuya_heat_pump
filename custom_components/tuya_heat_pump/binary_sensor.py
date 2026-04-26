@@ -146,7 +146,9 @@ class TuyaHeatpumpBinarySensor(BinarySensorEntity):
         # Conversion uygula
         conversion = self._config.get("conversion", "bool(value)")
         try:
-            result = eval(conversion, {"value": raw_value, "__builtins__": {}})
+            result = eval(
+                conversion, {"value": raw_value, "__builtins__": {"bool": bool}}
+            )
             return bool(result)
         except Exception as err:
             _LOGGER.warning("Conversion failed for %s: %s", self._sensor_id, err)

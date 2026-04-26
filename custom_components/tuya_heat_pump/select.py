@@ -110,6 +110,8 @@ class TuyaHeatpumpSelect(SelectEntity):
             except Exception as err:
                 _LOGGER.warning("Conversion failed for %s: %s", self._select_id, err)
 
+        value = self._options[value]
+
         if isinstance(value, str):
             return value
 

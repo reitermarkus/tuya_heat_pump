@@ -106,7 +106,16 @@ class TuyaHeatpumpSelect(SelectEntity):
         conversion = self._config.get("conversion", "value")
         if conversion != "value":
             try:
-                raw_value = eval(conversion, {"value": raw_value, "__builtins__": {}})
+                raw_value = eval(
+                    conversion,
+                    {
+                        "value": raw_value,
+                        "__builtins__": {
+                            "bool": bool,
+                            "int": int,
+                        },
+                    },
+                )
             except Exception as err:
                 _LOGGER.warning("Conversion failed for %s: %s", self._select_id, err)
 

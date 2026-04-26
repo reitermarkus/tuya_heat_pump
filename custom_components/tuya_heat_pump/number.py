@@ -92,7 +92,16 @@ class TuyaHeatpumpNumber(NumberEntity):
         # Conversion uygula
         conversion = self._config.get("conversion", "value")
         try:
-            result = eval(conversion, {"value": raw_value, "__builtins__": {}})
+            result = eval(
+                conversion,
+                {
+                    "value": raw_value,
+                    "__builtins__": {
+                        "bool": bool,
+                        "int": int,
+                    },
+                },
+            )
             return float(result) if isinstance(result, (int, float)) else result
         except Exception as err:
             _LOGGER.warning("Conversion failed for %s: %s", self._number_id, err)

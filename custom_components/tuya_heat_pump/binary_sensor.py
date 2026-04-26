@@ -147,7 +147,14 @@ class TuyaHeatpumpBinarySensor(BinarySensorEntity):
         conversion = self._config.get("conversion", "bool(value)")
         try:
             result = eval(
-                conversion, {"value": raw_value, "__builtins__": {"bool": bool}}
+                conversion,
+                {
+                    "value": raw_value,
+                    "__builtins__": {
+                        "bool": bool,
+                        "int": int,
+                    },
+                },
             )
             return bool(result)
         except Exception as err:

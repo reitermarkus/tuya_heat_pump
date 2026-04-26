@@ -472,8 +472,7 @@ class TuyaScaleDataUpdateCoordinator(DataUpdateCoordinator):
                 t = str(int(time.time() * 1000))
                 path = DEVICE_COMMAND_PATH.format(device_id=self.device_id)
 
-                original_value = value
-                _LOGGER.debug("Cloud → ham değer gönderiliyor: %s", value)
+                _LOGGER.debug("Cloud → sending raw value: %s", value)
                 properties = {code: value}
                 properties_json = json.dumps(properties)
                 body_dict = {"properties": properties_json}
@@ -493,7 +492,7 @@ class TuyaScaleDataUpdateCoordinator(DataUpdateCoordinator):
                 }
 
                 url = f"{self.api_endpoint}{path}"
-                _LOGGER.info("Cloud komut (v2.0) - ham değer: %s = %s", code, value)
+                _LOGGER.info("Cloud command (v2.0) - raw value: %s = %s", code, value)
 
                 response = await self.hass.async_add_executor_job(
                     make_api_request, url, headers, "POST", body_dict
@@ -502,14 +501,14 @@ class TuyaScaleDataUpdateCoordinator(DataUpdateCoordinator):
                 result = response.json()
 
                 if result.get("success", False):
-                    _LOGGER.info("✅ Cloud komut başarılı: %s = %s", code, value)
+                    _LOGGER.info("✅ Cloud command successful: %s = %s", code, value)
                     await asyncio.sleep(2)
                     await self.async_request_refresh()
                     return True
                 else:
-                    error_msg = result.get("msg", "Bilinmeyen hata")
+                    error_msg = result.get("msg", "Unknown error")
                     _LOGGER.error(
-                        "❌ Cloud komut başarısız: %s = %s → %s", code, value, error_msg
+                        "❌ Cloud command failed: %s = %s → %s", code, value, error_msg
                     )
                     return False
 

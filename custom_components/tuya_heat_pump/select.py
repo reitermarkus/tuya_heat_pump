@@ -100,17 +100,17 @@ class TuyaHeatpumpSelect(SelectEntity):
         if not self.coordinator.data or code not in self.coordinator.data:
             return None
 
-        value = self.coordinator.data[code]["value"]
+        raw_value = self.coordinator.data[code]["value"]
 
         # Conversion varsa uygula
         conversion = self._config.get("conversion", "value")
         if conversion != "value":
             try:
-                value = eval(conversion, {"value": value, "__builtins__": {}})
+                raw_value = eval(conversion, {"value": raw_value, "__builtins__": {}})
             except Exception as err:
                 _LOGGER.warning("Conversion failed for %s: %s", self._select_id, err)
 
-        value = self._options[value]
+        value = self._options[raw_value]
 
         if isinstance(value, str):
             return value

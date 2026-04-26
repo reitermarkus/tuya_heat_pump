@@ -99,8 +99,8 @@ SELECT_TYPES = {
         "name": "Temperature Unit",
         "icon": "mdi:thermometer",
         "options": {
-            False: "°C",
-            True: "°F",
+            "0": "°C",
+            "1": "°F",
         },
         "conversion": "value",
     },
@@ -122,8 +122,8 @@ SELECT_TYPES = {
         "name": "Silent Mode",
         "icon": "mdi:sine-wave",
         "options": {
-            False: "Silent",
-            True: "Boost",
+            "0": "Silent",
+            "1": "Boost",
         },
         "conversion": "value",
     },

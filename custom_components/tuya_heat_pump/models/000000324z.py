@@ -99,8 +99,8 @@ SELECT_TYPES = {
         "name": "Temperature Unit",
         "icon": "mdi:thermometer",
         "options": {
-            False: "°C",
-            True: "°F",
+            False: "°F",
+            True: "°C",
         },
         "conversion": "value",
     },

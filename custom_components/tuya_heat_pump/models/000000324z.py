@@ -13,7 +13,6 @@ SENSOR_TYPES = {
         "icon": "mdi:thermometer",
         "device_class": "temperature",
         "state_class": "measurement",
-        "conversion": "value",
     },
     "speed_percentage": {
         "dp_id": 104,
@@ -22,7 +21,6 @@ SENSOR_TYPES = {
         "unit": "%",
         "icon": "mdi:speedometer",
         "state_class": "measurement",
-        "conversion": "value",
     },
     "lower_temperature_limit": {
         "dp_id": 107,
@@ -32,7 +30,6 @@ SENSOR_TYPES = {
         "icon": "mdi:thermometer-chevron-down",
         "device_class": "temperature",
         "state_class": "measurement",
-        "conversion": "value",
     },
     "upper_temperature_limit": {
         "dp_id": 108,
@@ -42,7 +39,6 @@ SENSOR_TYPES = {
         "icon": "mdi:thermometer-chevron-up",
         "device_class": "temperature",
         "state_class": "measurement",
-        "conversion": "value",
     },
     "fault_code_1": {
         "dp_id": 115,
@@ -71,7 +67,6 @@ SWITCH_TYPES = {
         "code": "Power",
         "name": "Power",
         "icon": "mdi:power",
-        "conversion": "value",
     },
 }
 
@@ -86,8 +81,6 @@ NUMBER_TYPES = {
         "min_value": 18.0,  # DP 107
         "max_value": 40.0,  # DP 108
         "step": 1.0,
-        "conversion": "value",
-        "api_conversion": "value",
     },
 }
 
@@ -102,7 +95,6 @@ SELECT_TYPES = {
             False: "°F",
             True: "°C",
         },
-        "conversion": "value",
     },
     "mode": {
         "dp_id": 105,
@@ -114,7 +106,6 @@ SELECT_TYPES = {
             "warm": "Warm",
             "cool": "Cool",
         },
-        "conversion": "value",
     },
     "silent_mode": {
         "dp_id": 117,
@@ -125,6 +116,5 @@ SELECT_TYPES = {
             False: "Silent",
             True: "Boost",
         },
-        "conversion": "value",
     },
 }

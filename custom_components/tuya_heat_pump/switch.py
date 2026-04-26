@@ -63,6 +63,7 @@ class TuyaHeatpumpSwitch(SwitchEntity):
         self._attr_unique_id = f"{device_name_slug}_{switch_id}"
 
         self._attr_name = config.get("name", switch_id)
+        self._attr_device_class = config.get("device_class")
         self._attr_icon = config.get("icon")
         self._attr_has_entity_name = True
 

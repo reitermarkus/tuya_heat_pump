@@ -76,7 +76,7 @@ NUMBER_TYPES = {
         "dp_id": 106,
         "code": "SetTemp",
         "name": "Target Temperature",
-        "icon": "mdi:thermometer",
+        "icon": "mdi:water-thermometer",
         "unit": "°C",
         "device_class": "temperature",
         "min_value": 18,  # DP 107
@@ -92,7 +92,7 @@ SELECT_TYPES = {
         "dp_id": 104,
         "code": "change_tem",
         "name": "Temperature Unit",
-        "icon": "mdi:thermometer",
+        "icon": "mdi:temperature-celsius",
         "options": {
             False: "°F",
             True: "°C",
@@ -102,7 +102,7 @@ SELECT_TYPES = {
         "dp_id": 105,
         "code": "SetMode",
         "name": "Mode",
-        "icon": "mdi:air-conditioner",
+        "icon": "mdi:heat-pump",
         "options": {
             "smart": "Auto",
             "warm": "Warm",
@@ -113,7 +113,7 @@ SELECT_TYPES = {
         "dp_id": 117,
         "code": "SilentMdoe",
         "name": "Silent Mode",
-        "icon": "mdi:sine-wave",
+        "icon": "mdi:leaf",
         "options": {
             False: "Silent",
             True: "Boost",

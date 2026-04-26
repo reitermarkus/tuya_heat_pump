@@ -81,6 +81,7 @@ NUMBER_TYPES = {
         "min_value": 18.0,  # DP 107
         "max_value": 40.0,  # DP 108
         "step": 1.0,
+        "api_conversion": "int(value)",
     },
 }
 

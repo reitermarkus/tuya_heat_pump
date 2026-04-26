@@ -112,7 +112,14 @@ class TuyaHeatpumpNumber(NumberEntity):
         if "api_conversion" in self._config:
             try:
                 api_value = eval(
-                    self._config["api_conversion"], {"value": value, "__builtins__": {}}
+                    self._config["api_conversion"],
+                    {
+                        "value": value,
+                        "__builtins__": {
+                            "bool": bool,
+                            "int": int,
+                        },
+                    },
                 )
                 _LOGGER.debug("Converted HA value %s → API value %s", value, api_value)
             except Exception as err:

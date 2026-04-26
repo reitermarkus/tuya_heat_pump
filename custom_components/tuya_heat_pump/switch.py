@@ -113,7 +113,14 @@ class TuyaHeatpumpSwitch(SwitchEntity):
         if "api_conversion" in self._config:
             try:
                 api_value = eval(
-                    self._config["api_conversion"], {"value": True, "__builtins__": {}}
+                    self._config["api_conversion"],
+                    {
+                        "value": True,
+                        "__builtins__": {
+                            "bool": bool,
+                            "int": int,
+                        },
+                    },
                 )
                 _LOGGER.debug("Converted ON → API value %s", api_value)
             except Exception as err:
@@ -142,7 +149,14 @@ class TuyaHeatpumpSwitch(SwitchEntity):
         if "api_conversion" in self._config:
             try:
                 api_value = eval(
-                    self._config["api_conversion"], {"value": False, "__builtins__": {}}
+                    self._config["api_conversion"],
+                    {
+                        "value": False,
+                        "__builtins__": {
+                            "bool": bool,
+                            "int": int,
+                        },
+                    },
                 )
                 _LOGGER.debug("Converted OFF → API value %s", api_value)
             except Exception as err:

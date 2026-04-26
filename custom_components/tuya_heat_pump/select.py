@@ -135,7 +135,13 @@ class TuyaHeatpumpSelect(SelectEntity):
             try:
                 api_value = eval(
                     self._config["api_conversion"],
-                    {"value": option, "__builtins__": {}},
+                    {
+                        "value": option,
+                        "__builtins__": {
+                            "bool": bool,
+                            "int": int,
+                        },
+                    },
                 )
                 _LOGGER.debug(
                     "Converted HA option %s → API value %s", option, api_value

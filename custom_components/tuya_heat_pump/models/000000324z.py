@@ -78,9 +78,9 @@ NUMBER_TYPES = {
         "name": "Target Temperature",
         "icon": "mdi:thermometer",
         "unit": "°C",
-        "min_value": 18.0,  # DP 107
-        "max_value": 40.0,  # DP 108
-        "step": 1.0,
+        "min_value": 18,  # DP 107
+        "max_value": 40,  # DP 108
+        "step": 1,
         "api_conversion": "int(value)",
     },
 }

@@ -63,6 +63,7 @@ class TuyaHeatpumpNumber(NumberEntity):
         self._attr_unique_id = f"{device_name_slug}_{number_id}"
 
         self._attr_name = config.get("name", number_id)
+        self._attr_device_class = config.get("device_class")
         self._attr_icon = config.get("icon")
         self._attr_native_unit_of_measurement = config.get("unit")
         self._attr_native_min_value = config.get("min_value", 0.0)

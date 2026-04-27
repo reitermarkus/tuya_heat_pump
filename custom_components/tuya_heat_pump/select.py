@@ -112,9 +112,7 @@ class TuyaHeatpumpSelect(SelectEntity):
         if value in self._options:
             value = self._options[value]
         else:
-            _LOGGER.warning(
-                f"Unexpected value for {self._select_id}: {value} ({raw_value} not in {self._options})"
-            )
+            _LOGGER.warning(f"Unexpected value for {self._select_id}: {value}")
 
         if isinstance(value, str):
             return value

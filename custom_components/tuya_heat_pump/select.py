@@ -30,10 +30,10 @@ async def async_setup_entry(
 
     selects = []
 
-    # Model mapping'den select'leri al
+    # Get selects from model mapping
     select_configs = coordinator.model_mapping.get("selects", {})
 
-    # 🔴 DEĞİŞİKLİK: coordinator.data kontrolü kaldırıldı
+    # 🔴 CHANGE: coordinator.data check removed
     for select_id, select_config in select_configs.items():
         select_code = select_config["code"]
 
@@ -62,7 +62,7 @@ class TuyaHeatpumpSelect(SelectEntity):
         self._select_code = config["code"]
         self._config = config
 
-        # Device name ile unique_id oluştur
+        # Build unique_id from device name
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
@@ -76,9 +76,9 @@ class TuyaHeatpumpSelect(SelectEntity):
 
         self._attr_icon = config.get("icon")
 
-        # Options'ları config'den al
+        # Get options from config
         options_dict = config.get("options", {})
-        # options dict ise value:label şeklinde, liste ise direkt
+        # If options is a dict, it's value:label format; if list, use directly
         if isinstance(options_dict, dict):
             self._options = options_dict  # value → label mapping
         else:
@@ -148,9 +148,9 @@ class TuyaHeatpumpSelect(SelectEntity):
             _LOGGER.warning("❌ Failed to change %s to %s", self._select_id, option)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._select_id)} değiştirilemiyor. "
-                f"Cihazınız bu modu değiştirmeye izin vermiyor. "
-                f"Lütfen modu cihaz üzerinden yapın."
+                f"{self._config.get('name', self._select_id)} cannot be changed. "
+                f"Your device does not allow changing this mode. "
+                f"Please adjust the mode directly on the device."
             )
 
     @property

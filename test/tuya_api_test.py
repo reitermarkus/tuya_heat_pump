@@ -80,7 +80,7 @@ def get_device_model(access_id, access_key, api_endpoint, token, device_id):
     return response.json()
 
 def save_to_txt(data, filename):
-    """Veriyi txt dosyasına kaydet"""
+    """Save data to a txt file"""
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(data)
     return filename
@@ -107,7 +107,7 @@ def main():
     model = get_device_model(access_id, access_key, api_endpoint, token, device_id)
     print("✓ Model received.")
 
-    # Tüm veriyi birleştir
+    # Combine all data
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"tuya_device_data_{timestamp}.txt"
     
@@ -123,7 +123,7 @@ API Endpoint: {api_endpoint}
 {json.dumps(model, indent=2, ensure_ascii=False)}
 """
 
-    # Model datayı parse etmeye çalış
+    # Try to parse the model data
     try:
         model_json = json.loads(model["result"]["model"])
         output_data += f"""
@@ -140,23 +140,23 @@ API Endpoint: {api_endpoint}
 Parse Error: {e}
 """
 
-    # Ekrana da göster
+    # Also display on screen
     print("\n" + "=" * 50)
     print("RESULTS:")
     print("=" * 50)
     
-    # Sadece özet göster
+    # Show summary only
     if 'result' in properties and 'properties' in properties['result']:
         print(f"Found {len(properties['result']['properties'])} properties:")
         for prop in properties['result']['properties']:
             print(f"  - {prop['code']}: {prop.get('value', 'N/A')}")
     
-    # Dosyaya kaydet
+    # Save to file
     filepath = save_to_txt(output_data, filename)
     print(f"\n✓ All data saved to: {filepath}")
     print("✓ You can send this file to the developer.")
     
-    # Pencereyi açık tut
+    # Keep the window open
     print("\n" + "=" * 50)
     input("Press ENTER to exit...")
 

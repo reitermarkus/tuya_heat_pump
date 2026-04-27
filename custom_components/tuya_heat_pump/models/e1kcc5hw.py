@@ -260,7 +260,7 @@ SENSOR_TYPES = {
         "device_class": "temperature",
         "state_class": "measurement",
     },
-    # Hesaplanan sensörler
+    # Calculated sensors
     "calculated_total_power": {
         "code": "calculated_total_power",
         "name": "Total Power (3-Phase)",
@@ -280,7 +280,7 @@ BINARY_SENSOR_TYPES = {
         "code": "fault",
         "name": "Fault Status",
         "device_class": "problem",
-        "conversion": "value != 0",  # bitmap, 0 ise hata yok
+        "conversion": "value != 0",  # bitmap, 0 means no error
     },
     "compressor_state": {
         "dp_id": 27,

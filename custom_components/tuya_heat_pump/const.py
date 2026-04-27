@@ -11,7 +11,7 @@ PLATFORMS = [
     Platform.BINARY_SENSOR,
     Platform.SWITCH,
     Platform.NUMBER,
-    Platform.SELECT,  # Yeni ekledik
+    Platform.SELECT,  # Added
 ]
 
 DEFAULT_SCAN_INTERVAL = 3
@@ -23,7 +23,7 @@ CONF_ACCESS_KEY = "access_key"
 CONF_DEVICE_ID = "device_id"
 CONF_REGION = "region"
 
-# Yeni
+# New
 CONF_CONNECTION_TYPE = "connection_type"
 CONF_IP = "ip"
 CONF_LOCAL_KEY = "local_key"
@@ -42,7 +42,7 @@ REGIONS = {
 # API Paths
 TOKEN_PATH = "/v1.0/token?grant_type=1"
 DEVICE_DATA_PATH = "/v2.0/cloud/thing/{device_id}/shadow/properties"
-DEVICE_COMMAND_PATH = "/v2.0/cloud/thing/{device_id}/shadow/properties/issue"  # ← Değişiklik: v2.0 komut gönderme endpoint'i
+DEVICE_COMMAND_PATH = "/v2.0/cloud/thing/{device_id}/shadow/properties/issue"  # ← Change: v2.0 command send endpoint
 
 # Device Info
 DEFAULT_NAME = "Tuya Heat Pump"
@@ -58,6 +58,6 @@ ERROR_TIMEOUT = "Connection timeout"
 CURRENT_USER = "Korkuttum"
 CURRENT_TIME = "2025-05-29 14:10:10"
 
-# NOT: ESKİ SENSOR_TYPES, BINARY_SENSOR_TYPES, vs. ARTIK KULLANILMIYOR
-# Bunlar artık models/default.py'de ve diğer model dosyalarında
-# Bu dosyada sadece genel constant'lar ve API sabitleri kalıyor
+# NOTE: OLD SENSOR_TYPES, BINARY_SENSOR_TYPES, etc. ARE NO LONGER USED
+# They are now in models/default.py and other model files
+# Only general constants and API constants remain in this file

@@ -30,10 +30,10 @@ async def async_setup_entry(
 
     numbers = []
 
-    # Model mapping'den number'ları al
+    # Get numbers from model mapping
     number_configs = coordinator.model_mapping.get("numbers", {})
 
-    # 🔴 DEĞİŞİKLİK: coordinator.data kontrolü kaldırıldı
+    # 🔴 CHANGE: coordinator.data check removed
     for number_id, number_config in number_configs.items():
         number_code = number_config["code"]
 
@@ -58,7 +58,7 @@ class TuyaHeatpumpNumber(NumberEntity):
         self._number_code = config["code"]
         self._config = config
 
-        # Device name ile unique_id oluştur
+        # Build unique_id from device name
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
@@ -124,9 +124,9 @@ class TuyaHeatpumpNumber(NumberEntity):
             _LOGGER.warning("❌ Failed to set %s to %s", self._number_id, value)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._number_id)} değeri değiştirilemiyor. "
-                f"Cihazınız bu ayarı değiştirmeye izin vermiyor. "
-                f"Lütfen ayarı cihaz üzerinden yapın."
+                f"{self._config.get('name', self._number_id)} value cannot be changed. "
+                f"Your device does not allow changing this setting. "
+                f"Please adjust the setting directly on the device."
             )
 
     @property

@@ -55,8 +55,8 @@ SENSOR_TYPES = {
         "state_class": "measurement",
         "conversion": "value / 1000",
     },
-    # ========== HATA KODU SENSÖRLERİ ==========
-    # Fault 1 Code - Sadece hata kodu veya "OK"
+    # ========== ERROR CODE SENSORS ==========
+    # Fault 1 Code - Only fault code or "OK"
     "fault1_code": {
         "dp_id": 110,
         "code": "fault1",
@@ -64,7 +64,7 @@ SENSOR_TYPES = {
         "icon": "mdi:alert-circle",
         "conversion": "'OK' if value == 0 else f'Code: {value}'",
     },
-    # Fault 2 Code - Sadece hata kodu veya "OK"
+    # Fault 2 Code - Only fault code or "OK"
     "fault2_code": {
         "dp_id": 111,
         "code": "fault2",
@@ -75,10 +75,10 @@ SENSOR_TYPES = {
 }
 
 # ====================================================
-# BINARY SENSOR TYPES - Hızlı uyarı için
+# BINARY SENSOR TYPES - For quick alert
 # ====================================================
 BINARY_SENSOR_TYPES = {
-    # Fault 1 Binary - Arıza var/yok
+    # Fault 1 Binary - Fault present/absent
     "fault1": {
         "dp_id": 110,
         "code": "fault1",
@@ -86,7 +86,7 @@ BINARY_SENSOR_TYPES = {
         "device_class": "problem",
         "conversion": "value != 0",
     },
-    # Fault 2 Binary - Arıza var/yok
+    # Fault 2 Binary - Fault present/absent
     "fault2": {
         "dp_id": 111,
         "code": "fault2",

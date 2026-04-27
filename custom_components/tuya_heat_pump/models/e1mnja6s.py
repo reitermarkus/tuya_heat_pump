@@ -273,7 +273,7 @@ NUMBER_TYPES = {
         "code": "temp_set",
         "name": "Target Water Temperature",
         "icon": "mdi:thermometer",
-        "unit": "°F",  # Model açıklamasında Fahrenheit olduğu belirtilmiş
+        "unit": "°F",  # Model description specifies Fahrenheit
         "min_value": 0.0,
         "max_value": 176.0,
         "step": 1.0,

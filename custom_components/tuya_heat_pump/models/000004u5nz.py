@@ -243,7 +243,7 @@ SENSOR_TYPES = {
         "state_class": "measurement",
         "conversion": "value / 10",
     },
-    # Hesaplanan sensörler
+    # Calculated sensors
     "calculated_total_power": {
         "code": "calculated_total_power",
         "name": "Total Power (3-Phase)",
@@ -252,7 +252,7 @@ SENSOR_TYPES = {
         "device_class": "power",
         "state_class": "measurement",
     },
-    "countdown_left": {  # Bu sensör olmalı (ro)
+    "countdown_left": {  # This should be a sensor (ro)
         "dp_id": 14,
         "code": "countdown_left",
         "name": "Mainboard Program",
@@ -262,7 +262,7 @@ SENSOR_TYPES = {
     },
 }
 
-# Binary Sensor Types - SADECE boolean (bool) ve bitmap (fault) olanlar
+# Binary Sensor Types - Only boolean (bool) and bitmap (fault) types
 BINARY_SENSOR_TYPES = {
     "fault": {  # bitmap
         "dp_id": 15,
@@ -294,9 +294,9 @@ BINARY_SENSOR_TYPES = {
     },
 }
 
-# Switch Types - SADECE rw (read-write) boolean olanlar
+# Switch Types - Only rw (read-write) boolean types
 SWITCH_TYPES = {
-    "switch": {  # accessMode: "rw" ve type: "bool"
+    "switch": {  # accessMode: "rw" and type: "bool"
         "dp_id": 1,
         "code": "switch",
         "name": "Power",
@@ -305,9 +305,9 @@ SWITCH_TYPES = {
     },
 }
 
-# Number Types - SADECE rw (read-write) value olanlar
+# Number Types - Only rw (read-write) value types
 NUMBER_TYPES = {
-    "temp_set": {  # accessMode: "rw" ve type: "value"
+    "temp_set": {  # accessMode: "rw" and type: "value"
         "dp_id": 4,
         "code": "temp_set",
         "name": "Temperature Setpoint",
@@ -349,9 +349,9 @@ NUMBER_TYPES = {
     },
 }
 
-# Select Types - SADECE rw (read-write) enum olanlar
+# Select Types - Only rw (read-write) enum types
 SELECT_TYPES = {
-    "mode": {  # accessMode: "rw" ve type: "enum"
+    "mode": {  # accessMode: "rw" and type: "enum"
         "dp_id": 2,
         "code": "mode",
         "name": "Mode",

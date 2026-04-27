@@ -30,7 +30,7 @@ async def async_setup_entry(
 
     sensors = []
 
-    # Model mapping'den sensörleri al
+    # Get sensors from model mapping
     sensor_configs = coordinator.model_mapping.get("sensors", {})
 
     for sensor_id, sensor_config in sensor_configs.items():
@@ -41,7 +41,7 @@ async def async_setup_entry(
             sensors.append(TuyaHeatpumpSensor(coordinator, sensor_id, sensor_config))
             _LOGGER.info(f"Adding sensor: {sensor_id} ({sensor_code})")
         elif sensor_code == "calculated_power":
-            # calculated_power her zaman eklenir (API'de yok, hesaplanır)
+            # calculated_power is always added (not in API, computed locally)
             sensors.append(TuyaHeatpumpSensor(coordinator, sensor_id, sensor_config))
             _LOGGER.info(f"Adding calculated sensor: {sensor_id} ({sensor_code})")
         elif sensor_code == "total_energy":
@@ -109,14 +109,14 @@ class TuyaHeatpumpSensor(SensorEntity):
             return raw_value
 
     def _calculate_power(self) -> float | None:
-        """Güç hesaplama: P = V × I"""
+        """Power calculation: P = V × I"""
         if not self.coordinator.data:
             return None
 
         voltage = None
         current = None
 
-        # Model mapping'den ac_vol ve ac_curr config'lerini bul
+        # Find ac_vol and ac_curr configs from model mapping
         sensor_configs = self.coordinator.model_mapping.get("sensors", {})
 
         if "ac_vol" in sensor_configs and "ac_vol" in self.coordinator.data:
@@ -244,7 +244,7 @@ class TuyaEnergySensor(SensorEntity, RestoreEntity):
         voltage = None
         current = None
 
-        # Model mapping'den config'leri kullan
+        # Use configs from model mapping
         sensor_configs = self.coordinator.model_mapping.get("sensors", {})
 
         if "ac_vol" in sensor_configs and "ac_vol" in self.coordinator.data:

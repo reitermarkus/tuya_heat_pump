@@ -21,13 +21,13 @@ async def async_load_model_mapping(hass: HomeAssistant, model_id: str = None) ->
         return _MODEL_CACHE[model_id]
     
     try:
-        # Import işlemini async olarak yap
+        # Perform the import asynchronously
         def _import_model():
             try:
-                # Önce specific model
+                # Try specific model first
                 return importlib.import_module(f".models.{model_id}", __package__)
             except ImportError:
-                # Sonra default
+                # Fall back to default
                 return importlib.import_module(".models.default", __package__)
         
         model_module = await hass.async_add_executor_job(_import_model)
@@ -68,14 +68,14 @@ def _create_empty_mapping(model_id: str) -> Dict[str, Any]:
     }
 
 # ============================================================================
-# SYNC VERSION FOR BACKWARD COMPATIBILITY (config_flow.py için)
+# SYNC VERSION FOR BACKWARD COMPATIBILITY (used by config_flow.py)
 # ============================================================================
 
 def load_model_mapping(model_id: str = None) -> Dict[str, Any]:
-    """Sync version for backward compatibility (config_flow.py için).
+    """Sync version for backward compatibility (used by config_flow.py).
     
-    NOT: Bu sadece config_flow validation için kullanılır.
-    Gerçek entity'ler için async versiyon kullanılmalıdır.
+    NOTE: This is only used for config_flow validation.
+    The async version must be used for real entities.
     """
     # Default model ID if not provided
     if not model_id:
@@ -107,7 +107,7 @@ def load_model_mapping(model_id: str = None) -> Dict[str, Any]:
                 return mapping
                 
             except ImportError:
-                # models/default.py yok
+                # models/default.py not found
                 pass
         
         # Other models or default not found

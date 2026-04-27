@@ -29,11 +29,11 @@ async def async_setup_entry(
 
     binary_sensors = []
 
-    # Online status binary sensor - HER ZAMAN EKLE
+    # Online status binary sensor - ALWAYS ADD
     binary_sensors.append(TuyaHeatpumpOnlineSensor(coordinator))
     _LOGGER.info("Adding online status binary sensor")
 
-    # Model mapping'den binary sensörleri al
+    # Get binary sensors from model mapping
     binary_sensor_configs = coordinator.model_mapping.get("binary_sensors", {})
 
     for sensor_id, sensor_config in binary_sensor_configs.items():
@@ -62,7 +62,7 @@ class TuyaHeatpumpOnlineSensor(BinarySensorEntity):
         """Initialize the online status binary sensor."""
         self.coordinator = coordinator
 
-        # Device name ile unique_id oluştur
+        # Build unique_id from device name
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
@@ -88,7 +88,7 @@ class TuyaHeatpumpOnlineSensor(BinarySensorEntity):
     @property
     def available(self) -> bool:
         """Return if entity is available."""
-        # Online sensörü her zaman available olmalı
+        # Online sensor must always be available
         return True
 
     @property
@@ -119,7 +119,7 @@ class TuyaHeatpumpBinarySensor(BinarySensorEntity):
         self._sensor_code = config["code"]
         self._config = config
 
-        # Device name ile unique_id oluştur
+        # Build unique_id from device name
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )

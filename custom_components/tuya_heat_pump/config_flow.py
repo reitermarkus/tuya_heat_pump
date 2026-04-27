@@ -98,7 +98,7 @@ STEP_LOCAL_OPTIONS_SCHEMA = vol.Schema(
 
 async def validate_input(hass: HomeAssistant, data: dict, connection_type: str) -> dict:
     """Validate the user input allows us to connect."""
-    # Mock ConfigEntry oluştur (basit ve temiz şekilde)
+    # Create a mock ConfigEntry (simple and clean)
     mock_config = type(
         "MockConfigEntry",
         (),
@@ -113,7 +113,7 @@ async def validate_input(hass: HomeAssistant, data: dict, connection_type: str) 
     if connection_type == "cloud":
         coordinator = TuyaScaleDataUpdateCoordinator(hass, mock_config)
         try:
-            # Token ve device info almayı dene
+            # Try to get token and device info
             if not coordinator.access_token:
                 await coordinator._get_token()
             await coordinator.get_device_info()
@@ -190,7 +190,7 @@ class TuyaHeatpumpOptionsFlow(config_entries.OptionsFlow):
         errors = {}
         
         if user_input is not None:
-            # Yerel cihaz bağlantısını doğrula
+            # Validate local device connection
             try:
                 device = tinytuya.Device(
                     dev_id=self._config_entry.data[CONF_DEVICE_ID],
@@ -202,7 +202,7 @@ class TuyaHeatpumpOptionsFlow(config_entries.OptionsFlow):
                 if not status or 'dps' not in status:
                     errors["base"] = "cannot_connect"
                 else:
-                    # Güncellemeleri kaydet
+                    # Save updates
                     updated_data = {**self._config_entry.data}
                     updated_data.update({
                         CONF_IP: user_input[CONF_IP],
@@ -210,19 +210,19 @@ class TuyaHeatpumpOptionsFlow(config_entries.OptionsFlow):
                         CONF_PROTOCOL: user_input[CONF_PROTOCOL],
                     })
                     
-                    # ConfigEntry'i güncelle
+                    # Update ConfigEntry
                     self.hass.config_entries.async_update_entry(
                         self._config_entry,
                         data=updated_data
                     )
                     
-                    # Options'a sadece gereksiz alanları ekle (boş olabilir)
+                    # Add only optional fields to options (can be empty)
                     return self.async_create_entry(title="", data={})
             except Exception:
                 _LOGGER.exception("Local validation error in options")
                 errors["base"] = "cannot_connect"
 
-        # Mevcut değerleri al
+        # Get current values
         current_ip = self._config_entry.data.get(CONF_IP, "")
         current_local_key = self._config_entry.data.get(CONF_LOCAL_KEY, "")
         current_protocol = self._config_entry.data.get(CONF_PROTOCOL, "3.4")
@@ -253,7 +253,7 @@ class TuyaHeatpumpConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
     connection_type = None
-    user_data = None  # Geçici user input sakla
+    user_data = None  # Temporary storage for user input
 
     async def async_step_user(
         self, user_input: dict[str, any] | None = None

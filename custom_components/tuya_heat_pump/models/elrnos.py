@@ -196,7 +196,7 @@ SENSOR_TYPES = {
 
 # ====================================================
 # BINARY SENSOR TYPES (read-only bool/bitmap)
-# 18 adet binary sensor entity
+# 18 binary sensor entities
 # ====================================================
 BINARY_SENSOR_TYPES = {
     # Fault Status (bitmap)
@@ -314,7 +314,7 @@ BINARY_SENSOR_TYPES = {
 
 # ====================================================
 # SWITCH TYPES (read-write bool)
-# 1 adet switch entity
+# 1 switch entity
 # ====================================================
 SWITCH_TYPES = {
     "switch": {
@@ -328,7 +328,7 @@ SWITCH_TYPES = {
 
 # ====================================================
 # NUMBER TYPES (read-write value)
-# 4 adet number entity
+# 4 number entities
 # ====================================================
 NUMBER_TYPES = {
     "temp_set": {
@@ -355,7 +355,7 @@ NUMBER_TYPES = {
 
 # ====================================================
 # SELECT TYPES (read-write enum)
-# 4 adet select entity
+# 4 select entities
 # ====================================================
 SELECT_TYPES = {
     "mode": {

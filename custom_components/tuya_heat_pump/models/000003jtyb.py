@@ -23,7 +23,7 @@ BINARY_SENSOR_TYPES = {
         "code": "fault",
         "name": "Fault Alarm",
         "device_class": "problem",
-        "conversion": "value != 0",  # bitmap, 0 ise fault yok
+        "conversion": "value != 0",  # bitmap, 0 means no fault
     },
 }
 

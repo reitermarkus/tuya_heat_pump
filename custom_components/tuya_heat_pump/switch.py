@@ -30,10 +30,10 @@ async def async_setup_entry(
 
     switches = []
 
-    # Model mapping'den switch'leri al
+    # Get switches from model mapping
     switch_configs = coordinator.model_mapping.get("switches", {})
 
-    # 🔴 DEĞİŞİKLİK: coordinator.data kontrolü kaldırıldı
+    # 🔴 CHANGE: coordinator.data check removed
     for switch_id, switch_config in switch_configs.items():
         switch_code = switch_config["code"]
 
@@ -58,7 +58,7 @@ class TuyaHeatpumpSwitch(SwitchEntity):
         self._switch_code = config["code"]
         self._config = config
 
-        # Device name ile unique_id oluştur
+        # Build unique_id from device name
         device_name_slug = (
             coordinator.device_name.lower().replace(" ", "_").replace("-", "_")
         )
@@ -123,9 +123,9 @@ class TuyaHeatpumpSwitch(SwitchEntity):
             _LOGGER.warning("❌ Failed to turn ON %s", self._switch_id)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._switch_id)} açılamıyor. "
-                f"Cihazınız bu özelliği değiştirmeye izin vermiyor. "
-                f"Lütfen ayarı cihaz üzerinden yapın."
+                f"{self._config.get('name', self._switch_id)} cannot be turned on. "
+                f"Your device does not allow changing this feature. "
+                f"Please adjust the setting directly on the device."
             )
 
     async def async_turn_off(self, **kwargs: Any) -> None:
@@ -149,9 +149,9 @@ class TuyaHeatpumpSwitch(SwitchEntity):
             _LOGGER.warning("❌ Failed to turn OFF %s", self._switch_id)
 
             raise HomeAssistantError(
-                f"{self._config.get('name', self._switch_id)} kapatılamıyor. "
-                f"Cihazınız bu özelliği değiştirmeye izin vermiyor. "
-                f"Lütfen ayarı cihaz üzerinden yapın."
+                f"{self._config.get('name', self._switch_id)} cannot be turned off. "
+                f"Your device does not allow changing this feature. "
+                f"Please adjust the setting directly on the device."
             )
 
     @property

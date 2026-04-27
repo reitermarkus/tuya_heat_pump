@@ -71,7 +71,7 @@ SENSOR_TYPES = {
         "name": "Water Flow Rate",
         "unit": "m³/H",
         "icon": "mdi:gauge",
-        "device_class": None,  # Fixed: pressure yerine None
+        "device_class": None,  # Fixed: None instead of pressure
         "state_class": "measurement",
         "conversion": "value / 10",
     },
@@ -162,7 +162,7 @@ SENSOR_TYPES = {
     },
 }
 
-# Binary Sensor Types - DÜZELTİLDİ: bool() kullanılmıyor
+# Binary Sensor Types - FIXED: bool() not used
 BINARY_SENSOR_TYPES = {
     "fault": {
         "dp_id": 6,
@@ -215,7 +215,7 @@ BINARY_SENSOR_TYPES = {
     },
 }
 
-# Switch Types - DÜZELTİLDİ: bool() kullanılmıyor
+# Switch Types - FIXED: bool() not used
 SWITCH_TYPES = {
     "switch": {
         "dp_id": 1,
@@ -252,7 +252,7 @@ NUMBER_TYPES = {
         "max_value": 25.0,
         "step": 1.0,
         "conversion": "value / 10",
-        "api_conversion": "value * 10",  # HA → API için ters dönüşüm
+        "api_conversion": "value * 10",  # HA → API reverse conversion
     },
     "heat_temp_set": {
         "dp_id": 103,

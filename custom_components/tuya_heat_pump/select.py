@@ -77,12 +77,12 @@ class TuyaHeatpumpSelect(SelectEntity):
         self._attr_icon = config.get("icon")
 
         # Get options from config
-        options_dict = config.get("options", {})
+        options = config.get("options", {})
         # If options is a dict, it's value:label format; if list, use directly
-        if isinstance(options_dict, dict):
-            self._options = options_dict  # value → label mapping
+        if isinstance(options, dict):
+            self._options = options  # value → label mapping
         else:
-            self._options = {opt: opt for opt in options_dict}
+            self._options = {opt: opt for opt in options}
 
         self._reverse_options = {value: key for key, value in self._options.items()}
 
@@ -113,7 +113,7 @@ class TuyaHeatpumpSelect(SelectEntity):
             value = self._options[value]
         else:
             _LOGGER.warning(
-                f"Unexpected value for {self._select_id}: {value} ({raw_value})"
+                f"Unexpected value for {self._select_id}: {value} ({raw_value} not in {self._options})"
             )
 
         if isinstance(value, str):
@@ -132,6 +132,8 @@ class TuyaHeatpumpSelect(SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         _LOGGER.info("Changing %s to %s", self._select_id, option)
+
+        option = self._reverse_options[option]
 
         conversion = Conversion(self._config.get("api_conversion", "value"))
         try:
